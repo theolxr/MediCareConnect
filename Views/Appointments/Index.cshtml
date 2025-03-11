@@ -1,0 +1,150 @@
+﻿@model IEnumerable<MediCareConnect.Models.Appointment>
+@using MediCareConnect.Models
+@{
+    ViewBag.Title = "My Appointments";
+    bool isPatient = User.IsInRole("Patient");
+    bool isDoctor = User.IsInRole("Doctor");
+    bool isAdmin = User.IsInRole("Admin");
+}
+
+<div class="container mt-4">
+    <h2 class="text-primary mb-4">My Appointments</h2>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">
+            No appointments found.
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            @foreach (var appointment in Model)
+            {
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-header bg-primary text-white">
+                            @appointment.AppointmentDate.ToString("g")
+                        </div>
+                        <div class="card-body">
+                            <p>
+                                <strong>Doctor: </strong>
+                                @if (appointment.Doctor != null)
+                                {
+                                    <a asp-controller="Profile" asp-action="DoctorDetails" asp-route-id="@appointment.Doctor.Id">
+                                        @appointment.Doctor.FullName
+                                    </a>
+                                }
+                            </p>
+                            <p>
+                                <strong>Patient: </strong>
+                                @if (appointment.Patient != null)
+                                {
+                                    <a asp-controller="Profile" asp-action="PatientDetails" asp-route-id="@appointment.Patient.Id">
+                                        @appointment.Patient.FullName
+                                    </a>
+                                }
+                            </p>
+                            <p>
+                                <strong>Notes: </strong> @appointment.Notes
+                            </p>
+                            <p>
+                                <strong>Status: </strong> @appointment.Status
+                            </p>
+                        </div>
+                        <div class="card-footer bg-light">
+                            @if (isPatient)
+                            {
+                                if (appointment.Status == AppointmentStatus.Confirmed || appointment.Status == AppointmentStatus.Cancelled)
+                                {
+                                    <button class="btn btn-sm btn-info finish-review-btn" data-appointmentid="@appointment.Id">
+                                        Finish &amp; Review
+                                    </button>
+                                }
+                                else if (appointment.Status == AppointmentStatus.Finished)
+                                {
+                                    <button class="btn btn-sm btn-info review-btn" data-appointmentid="@appointment.Id" data-doctorid="@appointment.Doctor?.Id">
+                                        Review
+                                    </button>
+                                }
+                            }
+                            else if (isDoctor && appointment.Status == AppointmentStatus.Pending)
+                            {
+                                <form asp-action="Confirm" asp-route-id="@appointment.Id" method="post" class="d-inline">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-sm btn-success">Confirm</button>
+                                </form>
+                                <a class="btn btn-sm btn-danger" asp-action="Reject" asp-route-id="@appointment.Id">Reject</a>
+                            }
+                            else if (isAdmin)
+                            {
+                                <a class="btn btn-sm btn-primary" asp-action="AdminEdit" asp-route-id="@appointment.Id">Edit</a>
+                                <a class="btn btn-sm btn-danger" asp-action="AdminDelete" asp-route-id="@appointment.Id">Delete</a>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+
+    @if (isPatient)
+    {
+        <div class="text-end">
+            <a asp-action="Create" class="btn btn-primary">Schedule New Appointment</a>
+        </div>
+    }
+</div>
+
+@* Render the review modal partial and pass a new instance of the view model *@
+@await Html.PartialAsync("~/Views/Reviews/_ReviewModal.cshtml", new MediCareConnect.Models.DoctorReviewViewModel())
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        $(document).ready(function(){
+            $('.finish-review-btn').click(function(){
+                var appointmentId = $(this).data('appointmentid');
+                $.ajax({
+                    url: '@Url.Action("FinishAndReview", "Appointments")',
+                    type: 'POST',
+                    data: {
+                        id: appointmentId,
+                        __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').first().val()
+                    },
+                    success: function(response) {
+                        if(response.success) {
+                            $('#DoctorId').val(response.doctorId);
+                            $('#AppointmentId').val(response.appointmentId);
+                            $('#Rating').val(0);
+                            $('.star').css('color', '');
+                            $('#reviewModal').modal('show');
+                        }
+                    },
+                    error: function() {
+                        alert('Error finishing appointment.');
+                    }
+                });
+            });
+
+            $('.review-btn').click(function(){
+                var doctorId = $(this).data('doctorid');
+                var appointmentId = $(this).data('appointmentid');
+                $('#DoctorId').val(doctorId);
+                $('#AppointmentId').val(appointmentId);
+                $('#Rating').val(0);
+                $('.star').css('color', '');
+                $('#reviewModal').modal('show');
+            });
+
+            $('.star').on('click', function(){
+                var rating = $(this).data('value');
+                $('#Rating').val(rating);
+                $('.star').each(function(){
+                    var starValue = $(this).data('value');
+                    $(this).css('color', starValue <= rating ? '#ffc107' : '');
+                });
+            });
+        });
+    </script>
+}

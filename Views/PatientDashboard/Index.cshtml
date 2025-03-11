@@ -1,0 +1,90 @@
+﻿@model MediCareConnect.Models.PatientDashboardViewModel
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Patient Dashboard";
+}
+
+<div class="container mt-4">
+    <h2 class="text-primary mb-4">Welcome, @Model.Patient.FullName!</h2>
+
+    <div class="row">
+        <!-- Upcoming Appointments Section -->
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-header">
+                    Upcoming Appointments
+                </div>
+                <div class="card-body">
+                    @if (Model.UpcomingAppointments.Any())
+                    {
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Date &amp; Time</th>
+                                    <th>Doctor</th>
+                                    <th>Notes</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var appointment in Model.UpcomingAppointments)
+                                {
+                                    <tr>
+                                        <td>@appointment.AppointmentDate.ToString("g")</td>
+                                        <td>
+                                            @if (appointment.Doctor != null)
+                                            {
+                                                <a asp-controller="Profile" asp-action="DoctorDetails" asp-route-id="@appointment.Doctor.Id">
+                                                    @appointment.Doctor.FullName
+                                                </a>
+                                            }
+                                        </td>
+                                        <td>@appointment.Notes</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        <p class="text-muted">You have no upcoming appointments.</p>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Recommended Doctors Section -->
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-header">
+                    Recommended Doctors
+                </div>
+                <div class="card-body">
+                    @if (Model.RecommendedDoctors.Any())
+                    {
+                        <ul class="list-group list-group-flush">
+                            @foreach (var doctor in Model.RecommendedDoctors)
+                            {
+                                <li class="list-group-item">
+                                    <a asp-controller="Profile" asp-action="DoctorDetails" asp-route-id="@doctor.Id">
+                                        @doctor.FullName
+                                    </a>
+                                    <br />
+                                    <small class="text-muted">@doctor.Specialty, @doctor.Location</small>
+                                </li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <p class="text-muted">No recommendations available.</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-end">
+        <a asp-controller="Appointments" asp-action="Create" class="btn btn-primary">Schedule New Appointment</a>
+    </div>
+</div>

@@ -1,0 +1,97 @@
+﻿@model MediCareConnect.Models.DoctorDashboardViewModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "My Schedule";
+}
+
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.4/index.global.min.css" rel="stylesheet" />
+
+<div class="container mt-4">
+    <h2 class="text-primary mb-4">My Schedule</h2>
+    <div id="calendar" style="max-width: 900px; margin: 0 auto;"></div>
+
+    <div class="text-end mt-3">
+        <a asp-controller="Appointments" asp-action="Index" class="btn btn-primary">
+            View All Appointments
+        </a>
+    </div>
+</div>
+
+<!-- Modal for displaying appointments on a day -->
+<div class="modal fade" id="appointmentModal" tabindex="-1" aria-labelledby="appointmentModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="appointmentModalLabel">Appointments on <span id="modalDate"></span></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="appointmentList">
+                    <!-- Appointments will be injected here -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.4/index.global.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var calendarEl = document.getElementById('calendar');
+      var calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        headerToolbar: {
+          left: 'prev,next today',
+          center: 'title',
+          right: 'dayGridMonth,timeGridWeek,timeGridDay'
+        },
+        // Load background events for the entire month
+        events: {
+          url: '@Url.Action("GetBackgroundEvents", "DoctorDashboard")',
+          method: 'GET'
+        },
+        // When a date is clicked, we fetch that day's appointments
+        dateClick: function(info) {
+          var dateStr = info.dateStr; // "YYYY-MM-DD"
+          fetchAppointmentsByDay(dateStr);
+        }
+      });
+      calendar.render();
+
+      // AJAX call to fetch appointments for a single day
+      function fetchAppointmentsByDay(dateStr) {
+        $.ajax({
+          url: '@Url.Action("GetAppointmentsByDay", "DoctorDashboard")',
+          type: 'GET',
+          data: { date: dateStr },
+          success: function(data) {
+            $('#modalDate').text(dateStr);
+            var listHtml = '';
+            if (data.length === 0) {
+              listHtml = '<p>No appointments for this day.</p>';
+            } else {
+              data.forEach(function(app) {
+                listHtml += '<div class="mb-2 border-bottom pb-2">';
+                listHtml += '<p><strong>Time:</strong> '
+                  + new Date(app.appointmentDate).toLocaleTimeString([], {hour: "2-digit", minute:"2-digit"})
+                  + '</p>';
+                listHtml += '<p><strong>Patient:</strong> ' + (app.patientFullName || 'N/A') + '</p>';
+                listHtml += '<p><strong>Notes:</strong> ' + (app.notes || '') + '</p>';
+                listHtml += '<p><strong>Status:</strong> ' + (app.status || '') + '</p>';
+                listHtml += '</div>';
+              });
+            }
+            $('#appointmentList').html(listHtml);
+            $('#appointmentModal').modal('show');
+          },
+          error: function() {
+            alert('Error fetching appointments.');
+          }
+        });
+      }
+    });
+</script>

@@ -1,0 +1,36 @@
+﻿@model MediCareConnect.Models.DoctorReviewViewModel
+
+<div class="modal fade" id="reviewModal" tabindex="-1" aria-labelledby="reviewModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="reviewModalLabel">Submit Your Review</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="reviewForm" asp-action="Create" asp-controller="Reviews" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" id="DoctorId" name="DoctorId" value="" />
+                    <input type="hidden" id="AppointmentId" name="AppointmentId" value="" />
+                    <div class="mb-3">
+                        <label class="form-label">Rating</label>
+                        <div id="starRating">
+                            @for (int i = 1; i <= 5; i++)
+                            {
+                                @:<span class="star" data-value="@i" style="font-size: 2rem; cursor: pointer;">&#9733;</span>
+                            }
+                        </div>
+                        <input type="hidden" id="Rating" name="Rating" value="0" />
+                        <span asp-validation-for="Rating" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="ReviewText" class="form-label"></label>
+                        <textarea asp-for="ReviewText" class="form-control" rows="4"></textarea>
+                        <span asp-validation-for="ReviewText" class="text-danger"></span>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit Review</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

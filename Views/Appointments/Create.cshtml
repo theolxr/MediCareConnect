@@ -1,0 +1,39 @@
+﻿@model MediCareConnect.Models.AppointmentViewModel
+@{
+    ViewBag.Title = "Schedule Appointment";
+}
+
+<div class="container mt-4">
+    <h2 class="text-primary mb-4">Schedule an Appointment</h2>
+    <div class="card">
+        <div class="card-header">Appointment Details</div>
+        <div class="card-body">
+            <form asp-action="Create" method="post">
+                @Html.AntiForgeryToken()
+                <div class="mb-3">
+                    <label asp-for="AppointmentDate" class="form-label"></label>
+                    <input asp-for="AppointmentDate" class="form-control" type="datetime-local" value="@Model.AppointmentDate.ToString("yyyy-MM-ddTHH:mm")" />
+                    <span asp-validation-for="AppointmentDate" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="DoctorId" class="form-label"></label>
+                    <select asp-for="DoctorId" class="form-select" asp-items="Model.Doctors">
+                        <option value="">-- Select Doctor --</option>
+                    </select>
+                    <span asp-validation-for="DoctorId" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Notes" class="form-label"></label>
+                    <textarea asp-for="Notes" class="form-control" placeholder="Any additional notes (optional)"></textarea>
+                    <span asp-validation-for="Notes" class="text-danger"></span>
+                </div>
+                <button type="submit" class="btn btn-primary">Schedule Appointment</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,32 @@
+﻿@model MediCareConnect.Models.Patient
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "My Profile - Patient";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg">
+                <div class="card-header bg-primary text-white text-center">
+                    <h3 class="mb-0">My Profile</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <!-- Patient Details: using full width since there's no image -->
+                        <div class="col-12">
+                            <h4>@Model.FullName</h4>
+                            <p class="mb-1"><strong>Email:</strong> @Model.Email</p>
+                            <p class="mb-1"><strong>Phone Number:</strong> @Model.PhoneNumber</p>
+                            <!-- Add any additional patient fields here -->
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer text-end bg-light">
+                    <a asp-action="EditPatient" class="btn btn-outline-primary">Edit Profile</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

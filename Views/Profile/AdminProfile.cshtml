@@ -1,0 +1,14 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Admin Profile";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4 text-primary">Admin Profile</h2>
+    <div class="card">
+        <div class="card-body">
+            <p>Welcome, @User.Identity.Name. As an Admin, you can manage site settings, users, and appointments.</p>
+            <!-- Additional admin options can be added here -->
+        </div>
+    </div>
+</div>

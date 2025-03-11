@@ -1,0 +1,11 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Choose Profile Type";
+}
+
+<div class="container mt-4">
+    <h2 class="text-primary mb-4">Create Your Profile</h2>
+    <p>You do not have a profile yet. Please choose which profile to create:</p>
+    <a href="@Url.Action("CreateDoctor", "Profile")" class="btn btn-primary me-2">Create Doctor Profile</a>
+    <a href="@Url.Action("CreatePatient", "Profile")" class="btn btn-secondary">Create Patient Profile</a>
+</div>

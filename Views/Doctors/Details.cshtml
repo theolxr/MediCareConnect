@@ -1,0 +1,123 @@
+﻿@model MediCareConnect.Models.DoctorDetailsViewModel
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Doctor Details";
+}
+
+<div class="container mt-4">
+    <h2 class="text-primary mb-4">Doctor Details</h2>
+    <div class="row mb-3">
+        <div class="col-md-3">
+            @if (!string.IsNullOrEmpty(Model.Doctor.ProfilePictureUrl))
+            {
+                <img src="@Model.Doctor.ProfilePictureUrl" alt="@Model.Doctor.FullName"
+                     class="rounded-circle img-thumbnail" style="max-width: 200px; height:auto;" />
+            }
+            else
+            {
+                <img src="~/images/default-doctor.png" alt="Default Doctor"
+                     class="rounded-circle img-thumbnail" style="max-width: 200px; height:auto;" />
+            }
+        </div>
+        <div class="col-md-9">
+            <div class="d-flex justify-content-between align-items-center">
+                <p class="mb-0"><strong>Name:</strong> @Model.Doctor.FullName</p>
+                <button type="button" class="btn btn-link favorite-btn" data-doctorid="@Model.Doctor.Id">
+                    @if (Model.IsFavorited)
+                    {
+                        <i class="fa fa-heart text-danger"></i>
+                    }
+                    else
+                    {
+                        <i class="fa fa-heart-o text-danger"></i>
+                    }
+                </button>
+            </div>
+            <p><strong>Specialty:</strong> @Model.Doctor.Specialty</p>
+            <p><strong>Location:</strong> @Model.Doctor.Location</p>
+            <p><strong>Average Rating:</strong> @(Model.AverageRating.ToString("F1") + " / 5")</p>
+        </div>
+    </div>
+
+    <h3 class="text-primary mb-3">Appointments</h3>
+    @if (Model.Appointments != null && Model.Appointments.Any())
+    {
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Notes</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var app in Model.Appointments)
+                {
+                    <tr>
+                        <td>@app.AppointmentDate.ToString("g")</td>
+                        <td>@app.Notes</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>No appointments found for this doctor.</p>
+    }
+
+    <h3 class="text-primary mt-4">Reviews</h3>
+    @if (Model.Reviews.Any())
+    {
+        <div class="list-group">
+            @foreach (var review in Model.Reviews)
+            {
+                <div class="list-group-item">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">Rating: @review.Rating / 5</h5>
+                        <small>@review.CreatedDate.ToString("g")</small>
+                    </div>
+                    @if (!string.IsNullOrEmpty(review.ReviewText))
+                    {
+                        <p class="mb-1">@review.ReviewText</p>
+                    }
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <p>No reviews yet for this doctor.</p>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function(){
+            $('.favorite-btn').click(function(){
+                var btn = $(this);
+                var doctorId = btn.data('doctorid');
+                $.ajax({
+                    url: '@Url.Action("ToggleFavorite", "Favorites")',
+                    type: 'POST',
+                    data: {
+                        doctorId: doctorId,
+                        __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').first().val()
+                    },
+                    success: function(response) {
+                        if(response.success){
+                            if(response.isFavorite){
+                                btn.html('<i class="fa fa-heart text-danger"></i>');
+                            } else {
+                                btn.html('<i class="fa fa-heart-o text-danger"></i>');
+                            }
+                        }
+                    },
+                    error: function() {
+                        alert('Error toggling favorite.');
+                    }
+                });
+            });
+        });
+    </script>
+}

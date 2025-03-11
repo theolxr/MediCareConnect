@@ -1,0 +1,49 @@
+﻿@model IEnumerable<MediCareConnect.Models.Appointment>
+@using MediCareConnect.Models
+@{
+    ViewBag.Title = "Manage Appointments";
+    string search = ViewBag.Search as string;
+}
+
+<div class="container mt-4">
+    <h2 class="text-primary mb-4">Manage Appointments</h2>
+    <form method="get" asp-action="Appointments" class="mb-3">
+        <div class="input-group">
+            <input type="text" name="search" class="form-control" placeholder="Search by doctor or patient name..." value="@search" />
+            <button type="submit" class="btn btn-primary">Search</button>
+        </div>
+    </form>
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">No appointments found.</div>
+    }
+    else
+    {
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Date &amp; Time</th>
+                    <th>Doctor</th>
+                    <th>Patient</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var app in Model)
+                {
+                    <tr>
+                        <td>@app.AppointmentDate.ToString("g")</td>
+                        <td>@app.Doctor?.FullName</td>
+                        <td>@app.Patient?.FullName</td>
+                        <td>@app.Status</td>
+                        <td>
+                            <a asp-action="EditAppointment" asp-route-id="@app.Id" class="btn btn-sm btn-primary">Edit</a>
+                            <a asp-action="DeleteAppointment" asp-route-id="@app.Id" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this appointment?');">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>

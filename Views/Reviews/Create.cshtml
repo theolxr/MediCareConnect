@@ -1,0 +1,38 @@
+﻿@model MediCareConnect.Models.DoctorReviewViewModel
+@{
+    ViewData["Title"] = "Submit a Review";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-4">
+    <h2 class="text-primary mb-4">Submit Your Review</h2>
+    <div class="card">
+        <div class="card-body">
+            <form asp-action="Create" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="DoctorId" />
+                <div class="mb-3">
+                    <label asp-for="Rating" class="form-label"></label>
+                    <select asp-for="Rating" class="form-select">
+                        <option value="">-- Select Rating --</option>
+                        @for (int i = 1; i <= 5; i++)
+                        {
+                            <option value="@i">@i</option>
+                        }
+                    </select>
+                    <span asp-validation-for="Rating" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="ReviewText" class="form-label"></label>
+                    <textarea asp-for="ReviewText" class="form-control" rows="4"></textarea>
+                    <span asp-validation-for="ReviewText" class="text-danger"></span>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit Review</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

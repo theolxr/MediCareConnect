@@ -1,0 +1,64 @@
+﻿@page
+@model MediCareConnect.Areas.Identity.Pages.Account.Manage.IndexModel
+@{
+    ViewData["Title"] = "Account Overview";
+}
+
+<div class="container mt-4">
+    <h2 class="text-primary mb-4">Account Overview</h2>
+
+    <!-- Personal Information Section -->
+    <div class="card mb-3">
+        <div class="card-header">
+            Personal Information
+        </div>
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3">Email</dt>
+                <dd class="col-sm-9">@Model.Email</dd>
+                <dt class="col-sm-3">Phone Number</dt>
+                <dd class="col-sm-9">@Model.PhoneNumber</dd>
+            </dl>
+            <div class="mt-2">
+                <a asp-page="./Email" class="btn btn-primary me-2">Change Email</a>
+                <a asp-page="./ChangePassword" class="btn btn-secondary">Change Password</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile Details Section -->
+    <div class="card mb-3">
+        <div class="card-header">
+            Profile Details
+        </div>
+        <div class="card-body">
+            @if (Model.UserProfile != null)
+            {
+                <dl class="row">
+                    <dt class="col-sm-3">Name</dt>
+                    <dd class="col-sm-9">@Model.UserProfile.FullName</dd>
+                    <dt class="col-sm-3">Role</dt>
+                    <dd class="col-sm-9">@Model.UserProfile.Role</dd>
+                </dl>
+            }
+            else
+            {
+                <div class="alert alert-info">
+                    You have not created your domain-specific profile yet.
+                    <a class="btn btn-primary ms-2" href="@Url.Action("Index", "Profile")">Go to My Profile</a>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Security Section -->
+    <div class="card mb-3">
+        <div class="card-header">
+            Security
+        </div>
+        <div class="card-body">
+            <a asp-page="./ChangePassword" class="btn btn-warning me-2">Change Password</a>
+            <a asp-page="./DeletePersonalData" class="btn btn-danger">Delete Personal Data</a>
+        </div>
+    </div>
+</div>

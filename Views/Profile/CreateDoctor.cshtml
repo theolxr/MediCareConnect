@@ -1,0 +1,42 @@
+﻿@model MediCareConnect.Models.CreateDoctorViewModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Create Doctor Profile";
+}
+
+<div class="container mt-4">
+    <h2 class="text-primary mb-4">Create Doctor Profile</h2>
+    <div class="card">
+        <div class="card-header">Enter Your Doctor Details</div>
+        <div class="card-body">
+            <form asp-action="CreateDoctor" method="post">
+                @Html.AntiForgeryToken()
+                <div class="mb-3">
+                    <label asp-for="FullName" class="form-label"></label>
+                    <input asp-for="FullName" class="form-control" placeholder="Enter your full name" />
+                    <span asp-validation-for="FullName" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Specialty" class="form-label"></label>
+                    <input asp-for="Specialty" class="form-control" placeholder="e.g., Cardiology" />
+                    <span asp-validation-for="Specialty" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="ProfilePictureUrl" class="form-label"></label>
+                    <input asp-for="ProfilePictureUrl" class="form-control" placeholder="Link to your profile picture (optional)" />
+                    <span asp-validation-for="ProfilePictureUrl" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Location" class="form-label"></label>
+                    <input asp-for="Location" class="form-control" placeholder="Enter your location" />
+                    <span asp-validation-for="Location" class="text-danger"></span>
+                </div>
+                <button type="submit" class="btn btn-primary">Create Profile</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

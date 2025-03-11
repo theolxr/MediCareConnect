@@ -1,0 +1,134 @@
+﻿@model MediCareConnect.Models.AdminDashboardViewModel
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Admin Dashboard";
+}
+
+<div class="container mt-4">
+    <h2 class="text-primary mb-4">Admin Dashboard</h2>
+
+    <!-- Assign Role Button Card -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card text-white bg-secondary">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="card-title mb-0">Assign Roles</h5>
+                        <small class="text-light">Manage user roles quickly</small>
+                    </div>
+                    <a class="btn btn-light" asp-controller="Admin" asp-action="AssignRole">Assign Role</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Metrics Cards -->
+    <div class="row">
+        <div class="col-md-3 mb-3">
+            <a asp-controller="AdminManagement" asp-action="Doctors" class="text-decoration-none">
+                <div class="card text-white bg-primary">
+                    <div class="card-body">
+                        <h5 class="card-title">Total Doctors</h5>
+                        <p class="card-text display-4">@Model.TotalDoctors</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-3 mb-3">
+            <a asp-controller="AdminManagement" asp-action="Patients" class="text-decoration-none">
+                <div class="card text-white bg-success">
+                    <div class="card-body">
+                        <h5 class="card-title">Total Patients</h5>
+                        <p class="card-text display-4">@Model.TotalPatients</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-3 mb-3">
+            <a asp-controller="AdminManagement" asp-action="Appointments" class="text-decoration-none">
+                <div class="card text-white bg-info">
+                    <div class="card-body">
+                        <h5 class="card-title">Total Appointments</h5>
+                        <p class="card-text display-4">@Model.TotalAppointments</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-3 mb-3">
+            <a asp-controller="AdminManagement" asp-action="Appointments" class="text-decoration-none">
+                <div class="card text-white bg-warning">
+                    <div class="card-body">
+                        <h5 class="card-title">Pending Appointments</h5>
+                        <p class="card-text display-4">@Model.PendingAppointments</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4 mb-3">
+            <a asp-controller="AdminManagement" asp-action="Appointments" class="text-decoration-none">
+                <div class="card text-white bg-secondary">
+                    <div class="card-body">
+                        <h5 class="card-title">Confirmed Appointments</h5>
+                        <p class="card-text display-4">@Model.ConfirmedAppointments</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4 mb-3">
+            <a asp-controller="AdminManagement" asp-action="Appointments" class="text-decoration-none">
+                <div class="card text-white bg-danger">
+                    <div class="card-body">
+                        <h5 class="card-title">Cancelled Appointments</h5>
+                        <p class="card-text display-4">@Model.CancelledAppointments</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4 mb-3">
+            <a asp-controller="AdminManagement" asp-action="Appointments" class="text-decoration-none">
+                <div class="card text-white bg-dark">
+                    <div class="card-body">
+                        <h5 class="card-title">Finished Appointments</h5>
+                        <p class="card-text display-4">@Model.FinishedAppointments</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+
+
+    <!-- Recent Appointments Section -->
+    <h3 class="mt-4">Recent Appointments</h3>
+    @if (Model.RecentAppointments.Any())
+    {
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Date &amp; Time</th>
+                    <th>Doctor</th>
+                    <th>Patient</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var app in Model.RecentAppointments)
+                {
+                    <tr>
+                        <td>@app.AppointmentDate.ToString("g")</td>
+                        <td>@app.Doctor?.FullName</td>
+                        <td>@app.Patient?.FullName</td>
+                        <td>@app.Status</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>No recent appointments found.</p>
+    }
+</div>

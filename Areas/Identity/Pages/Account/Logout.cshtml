@@ -1,0 +1,23 @@
+﻿@page
+@model LogoutModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Logout";
+}
+
+<div class="container mt-4">
+    <h2 class="text-primary mb-4">Log Out</h2>
+    <div class="card" style="max-width: 400px; margin: 0 auto;">
+        <div class="card-body">
+            <p class="mb-3">Are you sure you want to log out?</p>
+            <form method="post">
+                <button type="submit" class="btn btn-danger">Yes, Log Out</button>
+                <a asp-page="/Account/Manage/Index" class="btn btn-secondary ms-2">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

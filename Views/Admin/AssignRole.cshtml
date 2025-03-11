@@ -1,0 +1,41 @@
+﻿@model MediCareConnect.Models.UserRoleViewModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Assign Role";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-dark text-white text-center">
+                    <h4 class="mb-0">Assign Role</h4>
+                </div>
+                <div class="card-body">
+                    <form asp-action="AssignRole" method="post">
+                        @Html.AntiForgeryToken()
+                        <div class="mb-3">
+                            <label asp-for="Email" class="form-label">User Email</label>
+                            <input asp-for="Email" class="form-control" placeholder="Enter user's email" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="SelectedRole" class="form-label">Select Role</label>
+                            <select asp-for="SelectedRole" class="form-select" asp-items="Model.Roles">
+                                <option value="">-- Select Role --</option>
+                            </select>
+                            <span asp-validation-for="SelectedRole" class="text-danger"></span>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">Assign Role</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

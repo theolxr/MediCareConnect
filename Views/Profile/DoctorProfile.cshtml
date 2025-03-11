@@ -1,0 +1,71 @@
+﻿@model MediCareConnect.Models.Doctor
+@inject MediCareConnect.Data.ApplicationDbContext Context
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "My Profile - Doctor";
+
+    // Calculate average rating and get reviews
+    double avgRating = 0;
+    var reviews = Context.DoctorReviews
+        .Where(r => r.DoctorId == Model.Id)
+        .OrderByDescending(r => r.CreatedDate)
+        .ToList();
+    if (reviews.Any())
+    {
+        avgRating = reviews.Average(r => r.Rating);
+    }
+}
+
+<div class="container mt-4">
+    <h2 class="text-primary mb-4">My Profile - Doctor</h2>
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="row mb-3">
+                <div class="col-md-3">
+                    @if (!string.IsNullOrEmpty(Model.ProfilePictureUrl))
+                    {
+                        <img src="@Model.ProfilePictureUrl" alt="@Model.FullName" class="rounded-circle img-thumbnail" style="max-width:150px; height:auto;" />
+                    }
+                    else
+                    {
+                        <img src="~/images/default-doctor.png" alt="Default Doctor" class="rounded-circle img-thumbnail" style="max-width:150px; height:auto;" />
+                    }
+                </div>
+                <div class="col-md-9">
+                    <p><strong>Name:</strong> @Model.FullName</p>
+                    <p><strong>Specialty:</strong> @Model.Specialty</p>
+                    <p><strong>Location:</strong> @Model.Location</p>
+                    <p><strong>Average Rating:</strong> @(avgRating.ToString("F1") + " / 5")</p>
+                </div>
+            </div>
+            <a href="@Url.Action("EditDoctor", "Profile")" class="btn btn-primary">Edit Profile</a>
+        </div>
+    </div>
+
+    <h3 class="text-primary mb-3">Patient Reviews</h3>
+    @if (reviews.Any())
+    {
+        <div class="list-group">
+            @foreach (var review in reviews)
+            {
+                <div class="list-group-item">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">Rating: @review.Rating / 5</h5>
+                        <small>@review.CreatedDate.ToString("g")</small>
+                    </div>
+                    @if (!string.IsNullOrEmpty(review.ReviewText))
+                    {
+                        <p class="mb-1">@review.ReviewText</p>
+                    }
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info">
+            No reviews yet.
+        </div>
+    }
+</div>

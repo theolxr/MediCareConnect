@@ -1,0 +1,11 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Dashboard";
+}
+
+<div class="container mt-4">
+    <h2>Welcome, @ViewBag.DisplayName!</h2>
+    <p>You are logged in as: @ViewBag.RoleLabel</p>
+    <a asp-controller="Profile" asp-action="Index" class="btn btn-primary">My Profile</a>
+    <!-- Additional dashboard features can be added here -->
+</div>

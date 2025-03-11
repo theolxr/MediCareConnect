@@ -1,0 +1,27 @@
+﻿@model MediCareConnect.Models.AppointmentRejectViewModel
+@{
+    ViewData["Title"] = "Reject Appointment";
+}
+
+<div class="container mt-4">
+    <h2 class="text-primary mb-4">Reject Appointment</h2>
+    <div class="card">
+        <div class="card-header">Provide Rejection Reason</div>
+        <div class="card-body">
+            <form asp-action="Reject" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="AppointmentId" />
+                <div class="mb-3">
+                    <label asp-for="RejectionReason" class="form-label"></label>
+                    <textarea asp-for="RejectionReason" class="form-control" rows="3"></textarea>
+                    <span asp-validation-for="RejectionReason" class="text-danger"></span>
+                </div>
+                <button type="submit" class="btn btn-danger">Reject Appointment</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

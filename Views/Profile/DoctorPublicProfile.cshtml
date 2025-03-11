@@ -1,0 +1,58 @@
+﻿@model MediCareConnect.Models.DoctorPublicProfileViewModel
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Doctor Public Profile";
+}
+
+<div class="container mt-4">
+    <h2 class="text-primary mb-4">Doctor Profile</h2>
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="row mb-3">
+                <div class="col-md-3">
+                    @if (!string.IsNullOrEmpty(Model.Doctor.ProfilePictureUrl))
+                    {
+                        <img src="@Model.Doctor.ProfilePictureUrl" alt="@Model.Doctor.FullName" class="rounded-circle img-thumbnail" style="max-width:150px; height:auto;" />
+                    }
+                    else
+                    {
+                        <img src="~/images/default-doctor.png" alt="Default Doctor" class="rounded-circle img-thumbnail" style="max-width:150px; height:auto;" />
+                    }
+                </div>
+                <div class="col-md-9">
+                    <p><strong>Name:</strong> @Model.Doctor.FullName</p>
+                    <p><strong>Specialty:</strong> @Model.Doctor.Specialty</p>
+                    <p><strong>Location:</strong> @Model.Doctor.Location</p>
+                    <p><strong>Average Rating:</strong> @(Model.AverageRating.ToString("F1") + " / 5")</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h3 class="text-primary mb-3">Patient Reviews</h3>
+    @if (Model.Reviews.Any())
+    {
+        <div class="list-group">
+            @foreach (var review in Model.Reviews)
+            {
+                <div class="list-group-item">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">Rating: @review.Rating / 5</h5>
+                        <small>@review.CreatedDate.ToString("g")</small>
+                    </div>
+                    @if (!string.IsNullOrEmpty(review.ReviewText))
+                    {
+                        <p class="mb-1">@review.ReviewText</p>
+                    }
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info">
+            There are no reviews for this doctor yet.
+        </div>
+    }
+</div>

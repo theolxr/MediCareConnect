@@ -1,0 +1,66 @@
+﻿@model MediCareConnect.Models.DoctorSearchViewModel
+@inject MediCareConnect.Data.ApplicationDbContext Context
+@{
+    ViewBag.Title = "Doctors";
+}
+
+<div class="container mt-4">
+    <h2 class="text-primary mb-4">Find a Doctor</h2>
+
+    <form asp-action="Index" method="get" class="mb-4">
+        <div class="row">
+            <div class="col-md-4">
+                <input type="text" name="specialty" class="form-control" placeholder="Specialty" value="@Model.Specialty" />
+            </div>
+            <div class="col-md-4">
+                <input type="text" name="location" class="form-control" placeholder="Location" value="@Model.Location" />
+            </div>
+            <div class="col-md-4">
+                <button type="submit" class="btn btn-primary w-100">Search</button>
+            </div>
+        </div>
+    </form>
+
+    @if (Model.Doctors.Any())
+    {
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Specialty</th>
+                    <th>Location</th>
+                    <th>Average Rating</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var doctor in Model.Doctors)
+                {
+                    <tr>
+                        <td>
+                            <a asp-controller="Profile" asp-action="DoctorDetails" asp-route-id="@doctor.Id">
+                                @doctor.FullName
+                            </a>
+                        </td>
+                        <td>@doctor.Specialty</td>
+                        <td>@doctor.Location</td>
+                        <td>
+                            @{
+                                var reviews = Context.DoctorReviews.Where(r => r.DoctorId == doctor.Id);
+                                var avgRating = reviews.Any() ? reviews.Average(r => r.Rating) : 0;
+                            }
+                            @avgRating.ToString("F1") / 5
+                        </td>
+                        <td>
+                            <a class="btn btn-sm btn-primary" asp-controller="Profile" asp-action="DoctorDetails" asp-route-id="@doctor.Id">View Profile</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>No doctors found matching your criteria.</p>
+    }
+</div>
